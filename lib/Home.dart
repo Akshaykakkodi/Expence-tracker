@@ -1,7 +1,7 @@
 import 'package:expense_tracke_r/page1.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'constants.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -11,88 +11,102 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var amnt;
-  var purpse;
+  var details;
 
-
-  Future<dynamic>getData() async {
-    SharedPreferences spref =await SharedPreferences.getInstance();
-    amnt= spref.getString('amount');
-    purpse= spref.getString('purpose');
-
-
-    return amnt;
+  Future<dynamic>? getData() {
+    details = Constants.expense;
+    return null;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Expanded(
-          child: ListView(
-
-            children: [
-              FutureBuilder(
+        child: Column(
+          children: [
+            Expanded(
+              flex: 8,
+              child: FutureBuilder(
                 future: getData(),
                 builder: (context, snapshot) {
-                if(snapshot.hasData){
-                  return Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Card(
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Text('Amount : ',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,)),
+                  return ListView.builder(
+                    itemCount: Constants.expense.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        color: Colors.cyan,
+                        child: Container(
+                          height: 80,
+                          width: double.infinity,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 115, top: 15),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Amount : ',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                        'Rs ${Constants.expense[index]['Amount']}'),
+                                  ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Text('Rs $amnt',style: TextStyle(fontSize: 15)),
+                              ),
+                              SizedBox(height: 5,),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 115),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Purpose : ',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(Constants.expense[index]['purpose']),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-
-                                Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Text('Purpose : ',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Text(purpse,style: TextStyle(fontSize: 15),),
-                                )
-                              ],
-                            ),
-
-                          ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-
-                    ),
+                      );
+                    },
                   );
-
-                }else {return Text('No data');}
-              },),
-              SizedBox(height: 500,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                },
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Row(
                 children: [
-
+                  SizedBox(
+                    width:250 ,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 180),
+                      child: Text('Add new',style: TextStyle(fontSize: 16,color: Colors.teal)),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
-                    child: FloatingActionButton(onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) {
-                          return Mainpage();
-                        },));
-                    },child: Icon(Icons.add),),
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return Mainpage();
+                          },
+                        ));
+                      },
+                      child: Icon(Icons.add),
+                    ),
                   )
                 ],
-              )
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
